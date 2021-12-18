@@ -69,6 +69,7 @@
   },
   "devDependencies": {
     "@types/mocha": "^9.0.0",
+    "all-package-names": "^2.0.231",
     "coffee": "^5.4.0",
     "egg-bin": "^4.16.4",
     "egg-mock": "^4.2.0",

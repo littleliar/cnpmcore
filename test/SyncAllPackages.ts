@@ -14,7 +14,7 @@ async function createTask(url: string) {
 async function main() {
   const data = await load();
   console.log('Total %d packages', data.packageNames.length);
-  const lastIndex = 127065;
+  const lastIndex = 145619;
   for (const [ index, fullname ] of data.packageNames.entries()) {
     if (index < lastIndex) continue;
     let success = false;

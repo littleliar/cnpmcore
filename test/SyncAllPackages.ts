@@ -62,7 +62,7 @@ async function main() {
 
     while (!success) {
       try {
-        const url = `https://r2g.cnpmjs.org/-/package/${fullname}/syncs`;
+        const url = `https://r.cnpmjs.org/-/package/${fullname}/syncs`;
         const result = await createTask(url);
         const data = result.data;
         if (data && data.id) {

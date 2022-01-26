@@ -13,62 +13,27 @@ async function createTask(url: string) {
 
 async function main() {
   const data = await load();
-  console.log('Total %d packages', data.packageNames.length);
-  const lastIndex = 145619;
+  const total = data.packageNames.length;
+  console.log('Total %d packages', total);
+  const lastIndex = 0;
   for (const [ index, fullname ] of data.packageNames.entries()) {
     if (index < lastIndex) continue;
     let success = false;
-    // try {
-    //   const url = `https://registry.npmmirror.com/${fullname}/sync?sync_upstream=true`;
-    //   const result = await createTask(url);
-    //   const data = result.data;
-    //   if (data && data.logId) {
-    //     const logUrl = `https://registry.npmmirror.com/${fullname}/sync/log/${data.logId}`;
-    //     console.log('[%s] %s, status: %s, log: %s', index, fullname, result.status, logUrl);
-    //   } else {
-    //     console.log('[%s] %s, status: %s, data: %j', index, fullname, result.status, data);
-    //   }
-    //   success = true;
-    // } catch (err) {
-    //   console.error('[%s] %s, error: %s', index, fullname, err);
-    // }
-
-    // await setTimeout(1000);
-    // if (success) continue;
-
-    // try {
-    //   const url = `https://r2.cnpmjs.org/-/package/${fullname}/syncs`;
-    //   const result = await createTask(url);
-    //   const data = result.data;
-    //   if (data && data.id) {
-    //     const logUrl = `${url}/${data.id}/log`;
-    //     console.log('[%s] %s, status: %s, log: %s', index, fullname, result.status, logUrl);
-    //   } else {
-    //     console.log('[%s] %s, status: %s, data: %j', index, fullname, result.status, data);
-    //   }
-    //   success = true;
-    // } catch (err) {
-    //   console.error('[%s] %s, error: %s', index, fullname, err);
-    //   await setTimeout(1000);
-    // }
-
-    // if (success) continue;
-    // try r2g
 
     while (!success) {
       try {
-        const url = `https://r2g.cnpmjs.org/-/package/${fullname}/syncs`;
+        const url = `http://localhost:7001/-/package/${fullname}/syncs`;
         const result = await createTask(url);
         const data = result.data;
         if (data && data.id) {
           const logUrl = `${url}/${data.id}/log`;
-          console.log('[%s] %s, status: %s, log: %s', index, fullname, result.status, logUrl);
+          console.log('[%s/%s] %s, status: %s, log: %s', index, total, fullname, result.status, logUrl);
         } else {
-          console.log('[%s] %s, status: %s, data: %j', index, fullname, result.status, data);
+          console.log('[%s/%s] %s, status: %s, data: %j', index, total, fullname, result.status, data);
         }
         success = true;
       } catch (err: any) {
-        console.error('[%s] %s, error: %s', index, fullname, err.message);
+        console.error('[%s/%s] %s, error: %s', index, total, fullname, err.message);
         await setTimeout(1000);
       }
     }

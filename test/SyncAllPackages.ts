@@ -7,6 +7,11 @@ async function createTask(url: string) {
     method: 'PUT',
     timeout: 10000,
     dataType: 'json',
+    contentType: 'json',
+    data: {
+      syncDownloadData: true,
+      skipDependencies: true,
+    },
   });
   return result;
 }

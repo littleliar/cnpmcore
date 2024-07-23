@@ -1,56 +1,46 @@
-version: '3.6'
 services:
   redis:
-    image: redis:6-alpine
-    # command: redis-server --appendonly yes --requirepass cnpm
+    image: redis:6.2.14-alpine3.20
     restart: always
     volumes:
-      - cnpm-redis:/data
-    ports:
-      - 6379:6379
+      - ./.cnpmcore/redis:/data
     networks:
       - cnpm
 
   mysql:
-    image: mariadb
+    image: mysql:8.4.1
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD:
-      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-      # MYSQL_DATABASE: 'cnpmcore_unittest'
-      MYSQL_USER: user
-      MYSQL_PASSWORD: pass
+      MYSQL_ROOT_PASSWORD: qwe123!@#
+      MYSQL_DATABASE: cnpmcore
     volumes:
-      - cnpm-mysql:/var/lib/mysql
-      # - ./conf.d/mysql/:/etc/mysql/conf.d
-      # - ./init.d/mysql/:/docker-entrypoint-initdb.d
-    ports:
-      - 3306:3306
+      - ./.cnpmcore/mysql:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d
     networks:
       - cnpm
 
-  # database explorer
-  phpmyadmin:
-    image: phpmyadmin
+  npm:
+    image: cnpmcore:3.61.6
     restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD:
-      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-      MYSQL_USER: user
-      MYSQL_PASSWORD: pass
-      PMA_HOST: 'mysql'
-    ports:
-      - 8080:80
-    networks:
-      - cnpm
     depends_on:
       - mysql
-
-volumes:
-  cnpm-redis:
-  cnpm-mysql:
-
+      - redis
+    environment:
+      CNPMCORE_MYSQL_HOST: mysql
+      CNPMCORE_MYSQL_PASSWORD: qwe123!@#
+      CNPMCORE_MYSQL_DATABASE: cnpmcore
+      CNPMCORE_REDIS_HOST: redis
+      CNPMCORE_PASSWORD: admin@cnpmjs.org
+      CNPMCORE_DATA_DIR: /root/storage
+      CNPMCORE_CONFIG_REGISTRY: http://127.0.0.1:7001
+    volumes:
+      - ./.cnpmcore/storage:/root/storage
+      - ./.cnpmcore/logs:/root/logs
+    ports:
+      - 7001:7001
+    networks:
+      - cnpm
 
 networks:
   cnpm:
